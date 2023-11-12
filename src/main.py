@@ -131,7 +131,18 @@ def get_graph_from_code(code):
 ####################################################################################################
 
 #tests
- 
+tetra_test = 'AAGT'
+nods, edges = get_nod_and_edge_tetra(tetra_test)
+print(nods, edges)
+
+tetra_test = 'TTGA'
+nods, edges = get_nod_and_edge_tetra(tetra_test)
+print(nods, edges)
+
+
+nods, edges = get_graph_from_code(["AAGT", "TTGA"])
+
+print(nods, edges)
 
 
 
