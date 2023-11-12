@@ -149,21 +149,33 @@ print(nods, edges)
 ####################################################################################################
 # Test de présence de cycle
 
-# S_126_list = list(S_126)
-# S_126_list = sorted(S_126_list)
+S_126_list = list(S_126)
+S_126_list = sorted(S_126_list)
 
-# nods, edges = get_graph_from_code(S_126_list[0:5])
 
-# # Example for a directed graph
-# # Create or load your graph
-# dg = ig.Graph(edges, directed=True)
 
-# # Check if the graph is a DAG (Directed Acyclic Graph)
-# if dg.is_dag():
-#     print("The directed graph is acyclic (no cycles).")
-# else:
-#     print("The directed graph has at least one cycle.")
+# Assuming your functions are defined as before and you have the following data:
+nods, edges = get_graph_from_code(["ATGA", "TGAA"])
+#nods, edges = get_graph_from_code(S_126_list[0:5]) 
 
+# Step 1: Assign unique IDs to each node (on crée des dictionnaire qui lient )
+node_to_id = {node: idx for idx, node in enumerate(sorted(nods))}
+id_to_node = {idx: node for node, idx in node_to_id.items()}  # Optional, for later reference
+
+# Step 2: Convert edges to integer pairs
+edges_with_ids = [(node_to_id[edge[0]], node_to_id[edge[1]]) for edge in edges]
+
+# Step 3: Create the graph in igraph
+graph = ig.Graph(edges=edges_with_ids, directed=True)
+
+# Add node names as a vertex attribute (optional, but useful for interpretation)
+graph.vs["name"] = [id_to_node[idx] for idx in range(len(nods))]
+
+# Now you can work with the graph using igraph functions
+if graph.is_dag():
+    print("The directed graph is acyclic (no cycles).")
+else:
+    print("The directed graph contains cycles.")
 
 ####################################################################################################
 
