@@ -458,13 +458,14 @@ def nb_circular_autocomplementary_code(N, full_logging=False):
     print(f"Logging to output-{formatted_datetime}.txt")
     with open(f"output-{formatted_datetime}.txt", "w", encoding="utf-8") as file:
 
-        for n in tqdm(range(1, N+1), desc="Progress"):
+        for n in range(1, N+1):
             if full_logging:
                 file.write(f"taille: {n}\n")
             file.flush()
 
             start_time = time.time()
-            for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
+            total_combinations = count_valid_combinations(permutation_group_list_S_126, n)
+            for valid_combination_S_126 in tqdm(generate_combinations(permutation_group_list_S_126, n), total=total_combinations, desc=f"taille={n}"):
                 # print("ON ENTRE DANS LE FOR")
                 # print(valid_combination_S_126)
                 if graph_is_acyclic(valid_combination_S_126):
