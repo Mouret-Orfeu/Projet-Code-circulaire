@@ -364,7 +364,7 @@ permutation_group_list_S_126 = permutation_group_list_creation(S_126_list)
 # Soi E l'ensemble des éléments dand list_of_lists. C'est à dire l'ensemble des elements presents dans les sous lists de list_of_lists
 # Cette fonction génère toutes les combinaisons de taille n de E, tel qu'il y ai au plus un unique élément de chaque sous list dans une combinaison
 # J'ai un peu de mal à comprendre bien cette fonction, mais elle semble fonctionner
-def generate_combinations(list_of_lists, n):
+def generate_combinations_old(list_of_lists, n):
     """
     Generates all combinations of size 'n' from a set of elements, E, where E
     consists of all elements present in the sublists of 'list_of_lists'. Each
@@ -403,6 +403,8 @@ def generate_combinations(list_of_lists, n):
     used = [False] * len(list_of_lists)
     return recurse([], 0, -1)
 
+def generate_combinations(list_of_lists, n):
+    return itertools.chain.from_iterable(itertools.product(*subset) for subset in combinations(list_of_lists, n))
 
 # def count_valid_combinations(list_of_lists, N):
 #     count = [0] * N
@@ -411,7 +413,7 @@ def generate_combinations(list_of_lists, n):
 #             count[n-1] += 1
 #     return count
 
-def count_valid_combinations(list_of_lists, n):
+def count_valid_combinations_old(list_of_lists, n):
     """
     Counts the number of valid combinations of size 'n' that can be formed from
     a given list of lists, where each combination includes at most one element
@@ -438,25 +440,25 @@ def count_valid_combinations(list_of_lists, n):
     12
     """
     count = 0
-    combinations = generate_combinations(list_of_lists, n)
+    combinations = generate_combinations_old(list_of_lists, n)
     for valid_combination in combinations:
         count += 1
     return count
 
+def count_valid_combinations(list_of_lists, n):
+    list_of_lens = [len(l) for l in list_of_lists]
+    return sum(math.prod(subset) for subset in combinations(list_of_lens, n))
+
 # start_time = time.time()
-# result = count_valid_combinations(permutation_group_list_S_126, 5)
+# result = count_valid_combinations_old(permutation_group_list_S_126, 5)
 # end_time = time.time()
 # execution_time = end_time - start_time
 
 # print("Execution time:", execution_time, "seconds")
 # print("Result:", result)
 
-def count_valid_combinations_bis(list_of_lists, n):
-    list_of_lens = [len(l) for l in list_of_lists]
-    return sum(math.prod(subset) for subset in combinations(list_of_lens, n))
-
 start_time = time.time()
-result = count_valid_combinations_bis(permutation_group_list_S_126, 5)
+result = count_valid_combinations(permutation_group_list_S_126, 5)
 end_time = time.time()
 execution_time = end_time - start_time
 
@@ -483,7 +485,7 @@ def nb_circular_autocomplementary_code_detailed(N):
         for n in range(1, N+1):
             file.write("\n" + "taille: " + str(n) + "\n\n")
 
-            for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
+            for valid_combination_S_126 in generate_combinations_old(permutation_group_list_S_126, n):
                 # print("ON ENTRE DANS LE FOR")
                 # print(valid_combination_S_126)
                 if graph_is_acyclic(valid_combination_S_126):
@@ -500,7 +502,7 @@ def nb_circular_autocomplementary_code(N):
 
     for n in tqdm(range(1, N+1), desc="Progress"):
 
-        for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
+        for valid_combination_S_126 in generate_combinations_old(permutation_group_list_S_126, n):
 
             if graph_is_acyclic(valid_combination_S_126):
                 count[n-1] += 1
