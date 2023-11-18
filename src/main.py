@@ -513,7 +513,176 @@ def nb_circular_autocomplementary_code(N):
 # print(nb_circular_autocomplementary_code(N))
 
 
+####################################################################################################
+# test construction des combinaison avec des for imbriqués
 
+
+# permutation_group_list_S_126 est une liste de sous list, chaque sous liste est composé d'un tetra nucléotides présent dans S_114 et des permutations de ce tetra nucléotides prentes dans S_126
+permutation_group_list_S_126 = permutation_group_list_creation(S_126_list) 
+
+# Ne fonctionne qu'avec permutation_group_list_S_126 en gros, faut changer le code dans la focntion si on veut l'utiliser avec une autre liste de liste
+def generate_combinations_for_loops(list_of_lists, n):
+    use_grp_permu = [0] * 45
+    code = []
+    # Pour toutes les combinaisons de taille n des groupes de permutation de S_126
+    for comb_grp_permu in combinations(list_of_lists, n):
+
+        # On set use_grp_permu à 1 pour les groupes de permutation utilisés dans la permutation de ce tour de boucle
+        for i in range(45):
+            if list_of_lists[i] in comb_grp_permu:
+                use_grp_permu[i] = 1
+        
+        for tetra_0 in list_of_lists[0]:
+            if use_grp_permu[0] == 1:
+               code.append(tetra_0)
+            for tetra_1 in list_of_lists[1]:
+                if use_grp_permu[1] == 1:
+                   code.append(tetra_1)
+                for tetra_2 in list_of_lists[2]:
+                    if use_grp_permu[2] == 1:
+                       code.append(tetra_2)
+                    for tetra_3 in list_of_lists[3]:
+                        if use_grp_permu[3] == 1:
+                           code.append(tetra_3)
+                        for tetra_4 in list_of_lists[4]:
+                            if use_grp_permu[4] == 1:
+                               code.append(tetra_4)
+                            for tetra_5 in list_of_lists[5]:
+                                if use_grp_permu[5] == 1:
+                                   code.append(tetra_5)
+                                for tetra_6 in list_of_lists[6]:
+                                    if use_grp_permu[6] == 1:
+                                       code.append(tetra_6)
+                                    for tetra_7 in list_of_lists[7]:
+                                        if use_grp_permu[7] == 1:
+                                           code.append(tetra_7)
+                                        for tetra_8 in list_of_lists[8]:
+                                            if use_grp_permu[8] == 1:
+                                               code.append(tetra_8)
+                                            for tetra_9 in list_of_lists[9]:
+                                                if use_grp_permu[9] == 1:
+                                                   code.append(tetra_9)
+                                                for tetra_10 in list_of_lists[10]:
+                                                    if use_grp_permu[10] == 1:
+                                                       code.append(tetra_10)
+                                                    for tetra_11 in list_of_lists[11]:
+                                                        if use_grp_permu[11] == 1:
+                                                           code.append(tetra_11)
+                                                        for tetra_12 in list_of_lists[12]:
+                                                            if use_grp_permu[12] == 1:
+                                                               code.append(tetra_12)
+                                                            for tetra_13 in list_of_lists[13]:
+                                                                if use_grp_permu[13] == 1:
+                                                                   code.append(tetra_13)
+                                                                for tetra_14 in list_of_lists[14]:
+                                                                    if use_grp_permu[14] == 1:
+                                                                       code.append(tetra_14)
+                                                                    for tetra_15 in list_of_lists[15]:
+                                                                        if use_grp_permu[15] == 1:
+                                                                           code.append(tetra_15)
+                                                                        for tetra_16 in list_of_lists[16]:
+                                                                            if use_grp_permu[16] == 1:
+                                                                               code.append(tetra_16)
+                                                                            for tetra_17 in list_of_lists[17]:
+                                                                                if use_grp_permu[17] == 1:
+                                                                                   code.append(tetra_17)
+                                                                                for tetra_18 in list_of_lists[18]:
+                                                                                    if use_grp_permu[18] == 1:
+                                                                                       code.append(tetra_18)
+                                                                                    for tetra_19 in list_of_lists[19]:
+                                                                                        if use_grp_permu[19] == 1:
+                                                                                           code.append(tetra_19)
+                                                                                        for tetra_20 in list_of_lists[20]:
+                                                                                            if use_grp_permu[20] == 1:
+                                                                                               code.append(tetra_20)
+                                                                                            for tetra_21 in list_of_lists[21]:
+                                                                                                if use_grp_permu[21] == 1:
+                                                                                                   code.append(tetra_21)
+                                                                                                for tetra_22 in list_of_lists[22]:
+                                                                                                    if use_grp_permu[22] == 1:
+                                                                                                       code.append(tetra_22)
+                                                                                                    for tetra_23 in list_of_lists[23]:
+                                                                                                        if use_grp_permu[23] == 1:
+                                                                                                           code.append(tetra_23)
+                                                                                                        for tetra_24 in list_of_lists[24]:
+                                                                                                            if use_grp_permu[24] == 1:
+                                                                                                               code.append(tetra_24)
+                                                                                                            for tetra_25 in list_of_lists[25]:
+                                                                                                                if use_grp_permu[25] == 1:
+                                                                                                                   code.append(tetra_25)
+                                                                                                                for tetra_26 in list_of_lists[26]:
+                                                                                                                    if use_grp_permu[26] == 1:
+                                                                                                                       code.append(tetra_26)
+                                                                                                                    for tetra_27 in list_of_lists[27]:
+                                                                                                                        if use_grp_permu[27] == 1:
+                                                                                                                           code.append(tetra_27)
+                                                                                                                        for tetra_28 in list_of_lists[28]:
+                                                                                                                            if use_grp_permu[28] == 1:
+                                                                                                                               code.append(tetra_1)
+                                                                                                                            for tetra_29 in list_of_lists[29]:
+                                                                                                                                if use_grp_permu[29] == 1:
+                                                                                                                                   code.append(tetra_29)
+                                                                                                                                for tetra_30 in list_of_lists[30]:
+                                                                                                                                    if use_grp_permu[30] == 1:
+                                                                                                                                       code.append(tetra_30)
+                                                                                                                                    
+                                                                                                                                    tetra_31 = list_of_lists[31]
+                                                                                                                                    if use_grp_permu[31] == 1:
+                                                                                                                                       code.append(tetra_31)
+                                                                                                                                    
+                                                                                                                                    tetra_32 = list_of_lists[32]
+                                                                                                                                    if use_grp_permu[32] == 1:
+                                                                                                                                       code.append(tetra_32)
+                                                                                                                                    
+                                                                                                                                    tetra_33 = list_of_lists[33]
+                                                                                                                                    if use_grp_permu[33] == 1:
+                                                                                                                                       code.append(tetra_33)
+                                                                                                                                    
+                                                                                                                                    tetra_34 = list_of_lists[34]
+                                                                                                                                    if use_grp_permu[34] == 1:
+                                                                                                                                       code.append(tetra_34)
+                                                                                                                                    
+                                                                                                                                    tetra_35 = list_of_lists[35]
+                                                                                                                                    if use_grp_permu[35] == 1:
+                                                                                                                                       code.append(tetra_35)
+                                                                                                                                    
+                                                                                                                                    tetra_36 = list_of_lists[36]
+                                                                                                                                    if use_grp_permu[36] == 1:
+                                                                                                                                       code.append(tetra_36)
+                                                                                                                                    
+                                                                                                                                    tetra_36 = list_of_lists[37]
+                                                                                                                                    if use_grp_permu[37] == 1:
+                                                                                                                                       code.append(tetra_37)
+                                                                                                                                    
+                                                                                                                                    tetra_38 = list_of_lists[38]
+                                                                                                                                    if use_grp_permu[38] == 1:
+                                                                                                                                       code.append(tetra_38)
+
+                                                                                                                                    tetra_39 = list_of_lists[39]
+                                                                                                                                    if use_grp_permu[39] == 1:
+                                                                                                                                       code.append(tetra_39)
+                                                                                                                                    
+                                                                                                                                    tetra_40 = list_of_lists[40]
+                                                                                                                                    if use_grp_permu[40] == 1:
+                                                                                                                                       code.append(tetra_40)
+                                                                                                                                    
+                                                                                                                                    tetra_41 = list_of_lists[41]
+                                                                                                                                    if use_grp_permu[41] == 1:
+                                                                                                                                       code.append(tetra_41)
+                                                                                                                                    
+                                                                                                                                    tetra_42 = list_of_lists[42]
+                                                                                                                                    if use_grp_permu[42] == 1:
+                                                                                                                                       code.append(tetra_42)
+                                                                                                                                    
+                                                                                                                                    tetra_43 = list_of_lists[43]
+                                                                                                                                    if use_grp_permu[43] == 1:
+                                                                                                                                       code.append(tetra_43)
+                                                                                                                                    
+                                                                                                                                    tetra_44 = list_of_lists[44]
+                                                                                                                                    if use_grp_permu[44] == 1:
+                                                                                                                                       code.append(tetra_44)
+
+                                                                                                                                    yield code
 
 ####################################################################################################
 
