@@ -114,6 +114,29 @@ for p in itertools.product([0,1,2], repeat=6):
 # permutation groups creation
 
 def remove_duplicate_sublists(list_of_sublists):
+    """
+    Removes duplicate sublists from a given list of sublists, where two sublists are 
+    considered duplicates if they have the same elements, regardless of order.
+
+    The function maintains the original order of the first occurrence of each unique 
+    sublist in the input list. Each sublist in the input list is first sorted to 
+    determine uniqueness. If a sorted version of a sublist is not already present 
+    in the list of unique sublists, the original (unsorted) sublist is included in 
+    the result.
+
+    Args:
+    list_of_sublists (list of list): A list containing sublists. Each sublist can 
+                                     contain elements of any type that are comparable 
+                                     and sortable.
+
+    Returns:
+    list of list: A new list containing the unique sublists from the input list, 
+                  preserving the order of their first occurrence.
+
+    Example:
+    >>> remove_duplicate_sublists([[3, 2, 1], [1, 2, 3], [4, 5, 6]])
+    [[3, 2, 1], [4, 5, 6]]
+    """
     unique_sublists = []
     result = []
 
@@ -134,6 +157,30 @@ def remove_duplicate_sublists(list_of_sublists):
 
 
 def permutation_group_list_creation(list_tetra):
+    """
+    Creates a list of permutation groups from a given list of tetranucleotides (tetra). 
+    Each permutation group is a list containing a tetranucleotide and all its permutations 
+    present in the input list. The function ensures that each unique permutation group 
+    appears only once in the result.
+
+    The function first sorts the input list to ensure consistent processing. It then 
+    iterates over each tetranucleotide, creating a group of its permutations. Duplicate 
+    groups are removed, and the final list of permutation groups is sorted in descending 
+    order by their length.
+
+    Args:
+    list_tetra (list): A list of tetranucleotides, where each tetranucleotide is 
+                       represented as a string or a sequence-like object.
+
+    Returns:
+    list of list: A list of permutation groups. Each group is a list of tetranucleotides 
+                  that are permutations of each other. The groups are sorted by length 
+                  in descending order.
+
+    Example:
+    >>> permutation_group_list_creation(['ATGC', 'GCAT', 'TACG', 'AAAA'])
+    [['ATGC', 'GCAT', 'TACG'], ['AAAA']]
+    """
 
     # Sort list_tetra for consistent processing
     list_tetra = sorted(list_tetra)
@@ -194,8 +241,6 @@ def check_if_all_elements_are_in_list_of_list(list_of_list, set_tetra):
 
 ####################################################################################################
 # Fonction sur les graphes
-
-# OPTI: à voir si la structure set est la plus opti à utiliser
 
 # Cette fonction crée les arrêtes ( exemple (AA, AG), à partir d'un tetranucléotide 
 # Si on utilise cette fonction sur tout les tetranucléotides d'un code, il faudra verifier qu'aucune arrete n'est crée plusieurs fois
@@ -319,6 +364,29 @@ permutation_group_list_S_126 = permutation_group_list_creation(S_126_list)
 # Cette fonction génère toutes les combinaisons de taille n de E, tel qu'il y ai au plus un unique élément de chaque sous list dans une combinaison
 # J'ai un peu de mal à comprendre bien cette fonction, mais elle semble fonctionner
 def generate_combinations(list_of_lists, n):
+    """
+    Generates all combinations of size 'n' from a set of elements, E, where E 
+    consists of all elements present in the sublists of 'list_of_lists'. Each 
+    combination contains at most one unique element from each sublist. 
+
+    It recursively 
+    builds combinations by adding one element at a time from the different sublists 
+    without repeating a sublist in a single combination.
+
+    Args:
+    list_of_lists (list of list): A list where each element is a sublist, representing 
+                                  a distinct category or group of elements.
+    n (int): The size of each combination to be generated.
+
+    Yields:
+    list: A generator yielding combinations of elements. Each combination is a list 
+          of elements, where each element is taken from a different sublist of 
+          'list_of_lists' and the total number of elements is 'n'.
+
+    Example:
+    >>> list(generate_combinations([[1, 2], [3, 4], [5, 6]], 2))
+    [[1, 3], [1, 4], [1, 5], [1, 6], [2, 3], [2, 4], [2, 5], [2, 6], [3, 5], [3, 6], [4, 5], [4, 6]]
+    """
     def recurse(current, depth, last_used_index):
         if depth == n:
             yield current
@@ -343,15 +411,41 @@ def generate_combinations(list_of_lists, n):
 #     return count
 
 def count_valid_combinations(list_of_lists, n):
+    """
+    Counts the number of valid combinations of size 'n' that can be formed from 
+    a given list of lists, where each combination includes at most one element 
+    from each sublist. This function uses the 'generate_combinations' function 
+    to create the combinations and then counts them.
+
+    The function iterates over all possible combinations generated by 
+    'generate_combinations', incrementing a counter for each valid combination 
+    found. A combination is considered valid if it contains 'n' elements with 
+    no more than one element from each sublist.
+
+    Args:
+    list_of_lists (list of list): A list where each element is a sublist, representing 
+                                  a distinct category or group of elements.
+    n (int): The size of each combination to be generated and counted.
+
+    Returns:
+    int: The total number of valid combinations of size 'n' that can be formed 
+         from the elements of 'list_of_lists', respecting the constraint of 
+         using at most one element from each sublist.
+
+    Example:
+    >>> count_valid_combinations([[1, 2], [3, 4], [5, 6]], 2)
+    12
+    """
     count = 0
-    for valid_combination in generate_combinations(list_of_lists, n):
+    combinations = generate_combinations(list_of_lists, n)
+    for valid_combination in combinations:
         count += 1
     return count
 
-print(count_valid_combinations(permutation_group_list_S_126, 6))
+print(count_valid_combinations(permutation_group_list_S_126, 7))
 
 
-
+ 
 
 
 
