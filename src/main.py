@@ -446,7 +446,7 @@ def nb_circular_autocomplementary_code_detailed(N):
         for n in range(1, N+1):
             file.write("\n" + "taille: " + str(n) + "\n\n")
 
-            for valid_combination_S_126 in generate_combinations_old(permutation_group_list_S_126, n):
+            for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
                 # print("ON ENTRE DANS LE FOR")
                 # print(valid_combination_S_126)
                 if graph_is_acyclic(valid_combination_S_126):
@@ -463,7 +463,7 @@ def nb_circular_autocomplementary_code(N):
 
     for n in tqdm(range(1, N+1), desc="Progress"):
 
-        for valid_combination_S_126 in generate_combinations_old(permutation_group_list_S_126, n):
+        for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
 
             if graph_is_acyclic(valid_combination_S_126):
                 count[n-1] += 1
@@ -471,7 +471,7 @@ def nb_circular_autocomplementary_code(N):
     return count
 
 
-# print(nb_circular_autocomplementary_code(N))
+print(nb_circular_autocomplementary_code(N))
 
 
 ####################################################################################################
