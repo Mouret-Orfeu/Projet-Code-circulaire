@@ -7,6 +7,7 @@ from itertools import combinations
 from tqdm import tqdm
 import time
 from datetime import datetime, timedelta
+# import multiprocessing
 #from functools import lru_cache
 # from concurrent.futures import ProcessPoolExecutor
 
@@ -416,13 +417,13 @@ def count_valid_combinations(list_of_lists, n):
     return sum(math.prod(subset) for subset in combinations(list_of_lens, n))
 
 
-start_time = time.time()
-result = count_valid_combinations(permutation_group_list_S_126, 5)
-end_time = time.time()
-execution_time = end_time - start_time
+# start_time = time.time()
+# result = count_valid_combinations(permutation_group_list_S_126, 5)
+# end_time = time.time()
+# execution_time = end_time - start_time
 
-print("Execution time:", execution_time, "seconds")
-print("Result:", result)
+# print("Execution time:", execution_time, "seconds")
+# print("Result:", result)
 
 
 
@@ -453,7 +454,9 @@ def nb_circular_autocomplementary_code(N, full_logging=False):
     counts = [0] * N
 
     # on va écrire dans output.txt tout les code de toutes les tailles trouvé
-    with open(f"output-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt", "w", encoding="utf-8") as file:
+    formatted_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    print(f"Logging to output-{formatted_datetime}.txt")
+    with open(f"output-{formatted_datetime}.txt", "w", encoding="utf-8") as file:
 
         for n in tqdm(range(1, N+1), desc="Progress"):
             if full_logging:
@@ -480,6 +483,77 @@ def nb_circular_autocomplementary_code(N, full_logging=False):
 
 print(nb_circular_autocomplementary_code(N))
 
+# Code pour faire du multiprocessing
+# https://chat.openai.com/c/68dbb4cd-bec6-46e6-9d17-ae136704b0ea
+
+# def worker(input_queue, output_queue):
+#     while True:
+#         combination = input_queue.get()
+#         if combination is None:  # Termination signal
+#             break
+
+#         if graph_is_acyclic(combination):
+#             output_queue.put(combination)
+
+# def nb_circular_autocomplementary_code_parallel(N, full_logging=False):
+#     # permutation_group_list_S_126 = ...  # Define your permutation group list
+#     input_queue = multiprocessing.Queue()
+#     output_queue = multiprocessing.Queue()
+#     workers = []
+
+#     # Start worker processes
+#     for _ in range(multiprocessing.cpu_count()):
+#         p = multiprocessing.Process(target=worker, args=(input_queue, output_queue))
+#         p.start()
+#         workers.append(p)
+
+#     counts = [0] * N
+
+#     with open(f"output-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt", "w", encoding="utf-8") as file:
+#         for n in range(1, N+1):
+#             if full_logging:
+#                 file.write(f"taille: {n}\n")
+
+#             start_time = time.time()
+
+#             # Enqueue combinations for processing
+#             for combination in generate_combinations(permutation_group_list_S_126, n):
+#                 input_queue.put(combination)
+
+#             # Retrieve and count acyclic combinations
+#             while not input_queue.empty():
+#                 acyclic_combination = output_queue.get()
+#                 counts[n-1] += 1
+#                 if full_logging:
+#                     file.write(str(acyclic_combination))
+#                     file.write("\n")
+
+#             # Write additional data
+#             end_time = time.time()
+#             execution_time = end_time - start_time
+#             formatted_time = format_execution_time(execution_time)
+#             file.write(f"Nombre de codes de taille {n}: {counts[n-1]}\n")
+#             file.write(f"Temps d'exécution: {formatted_time}\n")
+#             print(f"Nombre de codes de taille {n}: {counts[n-1]}")
+#             print(f"Temps d'exécution: {formatted_time}\n")
+
+#             # Signal workers for the next batch
+#             for _ in workers:
+#                 input_queue.put(None)
+
+#     # Clean up worker processes
+#     for p in workers:
+#         p.join()
+
+#     return counts
+
+# def main():
+#     print(nb_circular_autocomplementary_code_parallel(N))
+
+# if __name__ == '__main__':
+#     # This is where you initialize multiprocessing
+#     multiprocessing.freeze_support()
+#     main()
 
 ####################################################################################################
 # test construction des combinaison avec des for imbriqués
