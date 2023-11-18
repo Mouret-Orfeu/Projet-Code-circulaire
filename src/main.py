@@ -436,40 +436,28 @@ print("Result:", result)
 N = 20
 
 # Cette fonction résoud le projet et écrit tout les codes circulaires autocomplémentaires dans output.txt
-def nb_circular_autocomplementary_code_detailed(N):
-    count = [0] * N
+def nb_circular_autocomplementary_code(N, full_logging=False):
+    counts = [0] * N
 
     # on va écrire dans output.txt tout les code de toutes les tailles trouvé
     with open("output.txt", "w") as file:
-        file.truncate(0)
 
-        for n in range(1, N+1):
-            file.write("\n" + "taille: " + str(n) + "\n\n")
+        for n in tqdm(range(1, N+1), desc="Progress"):
+            if full_logging:
+                file.write(f"\ntaille: {n}\n")
+            file.flush()
 
             for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
                 # print("ON ENTRE DANS LE FOR")
                 # print(valid_combination_S_126)
                 if graph_is_acyclic(valid_combination_S_126):
-                    count[n-1] += 1
-                    # print("ON ENTRE DANS LE IF")
-                    file.write(str(valid_combination_S_126))
-                    file.write("\n")
+                    counts[n-1] += 1
+                    if full_logging:
+                        file.write(str(valid_combination_S_126))
+                        file.write("\n")
+            file.write(f"nombre de codes de taille {n}: {counts[n-1]}\n")
 
-    return count
-
-# Cette fonction résoud le projet et n'écrit pas les codes circulaires autocomplémentaires dans output.txt
-def nb_circular_autocomplementary_code(N):
-    count = [0] * N
-
-    for n in tqdm(range(1, N+1), desc="Progress"):
-
-        for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
-
-            if graph_is_acyclic(valid_combination_S_126):
-                count[n-1] += 1
-
-    return count
-
+    return counts
 
 print(nb_circular_autocomplementary_code(N))
 
