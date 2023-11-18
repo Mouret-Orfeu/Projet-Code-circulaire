@@ -6,6 +6,7 @@ import math
 from itertools import combinations
 from tqdm import tqdm
 import time
+from datetime import datetime, timedelta
 #from functools import lru_cache
 # from concurrent.futures import ProcessPoolExecutor
 
@@ -432,6 +433,18 @@ print("Result:", result)
 ####################################################################################################
 # Résolution du projet
 
+def format_execution_time(execution_time):
+    # Convert execution_time to a timedelta object
+    execution_duration = timedelta(seconds=execution_time)
+
+    # Format the duration into hours, minutes, seconds, and milliseconds
+    formatted_duration = str(execution_duration).split('.')[0]  # This gives hh:mm:ss
+    milliseconds = f"{execution_time:.3f}".split('.')[1]  # This gives milliseconds
+
+    # Combine formatted_duration and milliseconds
+    formatted_time = f"{formatted_duration}.{milliseconds}"
+    return formatted_time
+
 # On parcourt l'ensemble des codes de taille inferieur à N
 N = 20
 
@@ -440,13 +453,14 @@ def nb_circular_autocomplementary_code(N, full_logging=False):
     counts = [0] * N
 
     # on va écrire dans output.txt tout les code de toutes les tailles trouvé
-    with open("output.txt", "w") as file:
+    with open(f"output-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt", "w", encoding="utf-8") as file:
 
         for n in tqdm(range(1, N+1), desc="Progress"):
             if full_logging:
-                file.write(f"\ntaille: {n}\n")
+                file.write(f"taille: {n}\n")
             file.flush()
 
+            start_time = time.time()
             for valid_combination_S_126 in generate_combinations(permutation_group_list_S_126, n):
                 # print("ON ENTRE DANS LE FOR")
                 # print(valid_combination_S_126)
@@ -455,7 +469,12 @@ def nb_circular_autocomplementary_code(N, full_logging=False):
                     if full_logging:
                         file.write(str(valid_combination_S_126))
                         file.write("\n")
-            file.write(f"nombre de codes de taille {n}: {counts[n-1]}\n")
+            end_time = time.time()
+            execution_time = end_time - start_time
+            formatted_time = format_execution_time(execution_time)
+            file.write(f"Nombre de codes de taille {n}: {counts[n-1]}\n")
+            file.write(f"Temps d'exécution: {formatted_time}\n")
+            file.write("\n")
 
     return counts
 
