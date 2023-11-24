@@ -7,8 +7,7 @@ from graph_utils import graph_is_acyclic
 
 
 def get_S108_and_S12_grouped_by_complements_and_circular_permutations():
-    L1 = []
-    L2 = []
+    L = []
     autocomplements = []
     for t in itertools.product("ATGC", repeat=4):
         t = "".join(t)
@@ -25,27 +24,19 @@ def get_S108_and_S12_grouped_by_complements_and_circular_permutations():
                     break
         elif not is_circular_permutation(t, c):
             circular_permutation_group_exists = False
-            for i, (l1, l2) in enumerate(zip(L1, L2)):
-                if is_circular_permutation(t, l1[0]):
+            for i, l in enumerate(L):
+                if is_circular_permutation(t, l[0][0]):
                     circular_permutation_group_exists = True
-                    if t not in (_t for l in L1 for _t in l) and t not in (
-                        _t for l in L2 for _t in l
-                    ):
-                        L1[i].append(t)
-                        L2[i].append(c)
+                    if t not in (_t for l in L for c in l for _t in c):
+                        L[i].append((t,c))
                     break
-                if is_circular_permutation(t, l2[0]):
+                if is_circular_permutation(t, l[0][1]):
                     circular_permutation_group_exists = True
-                    if t not in (_t for l in L1 for _t in l) and t not in (
-                        _t for l in L2 for _t in l
-                    ):
-                        L1[i].append(c)
-                        L2[i].append(t)
+                    if t not in (_t for l in L for c in l for _t in c):
+                        L[i].append((c,t))
                     break
             if not circular_permutation_group_exists:
-                L1.append([t])
-                L2.append([c])
-    L = [[(L1[i][j], L2[i][j]) for j in range(len(L1[i]))] for i in range(len(L1))]
+                L.append([(t,c)])
 
     return L, autocomplements
 
@@ -71,11 +62,8 @@ def generate_combinations(L, autocomplements, n):
     )
 
 def count_valid_combinations(L, autocomplements, n):
-    L_list_of_lens = [len(l) for l in L]
-    autocomplements_list_of_lens = [len(l) for l in autocomplements]
     len_L = len(L)
     len_autocomplements = len(autocomplements)
-    # print(len_L, len_autocomplements)
     m = max(0, (n - len_autocomplements + 1) // 2)
     M = min(n // 2 + 1, len_L)
     return sum(
