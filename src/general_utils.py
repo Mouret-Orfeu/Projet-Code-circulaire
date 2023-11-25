@@ -1,7 +1,7 @@
 import os
 
 
-def delete_empty_and_not_in_use_output_files():
+def delete_empty_and_not_in_use_output_files() -> None:
     for file in os.listdir():
         print(file)
         if file.startswith("output-") and file.endswith(".txt"):

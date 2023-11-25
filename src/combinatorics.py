@@ -6,9 +6,9 @@ from dna_utils import (get_circular_permutations, get_complement,
 from graph_utils import graph_is_acyclic
 
 
-def get_S108_and_S12_grouped_by_complements_and_circular_permutations():
-    L = []
-    autocomplements = []
+def get_S108_and_S12_grouped_by_complements_and_circular_permutations() -> tuple[list[list[tuple[str, str]]], list[list[str]]]:
+    L: list[list[tuple[str, str]]] = []
+    autocomplements: list[list[str]] = []
     for t in itertools.product("ATGC", repeat=4):
         t = "".join(t)
         if is_circular_permutation(t, t, strict=True):
@@ -41,7 +41,7 @@ def get_S108_and_S12_grouped_by_complements_and_circular_permutations():
     return L, autocomplements
 
 
-def generate_combinations(L, autocomplements, n):
+def generate_combinations(L: list[list[tuple[str, str]]], autocomplements: list[list[str]], n: int) -> itertools.chain[tuple[tuple[str, ...], tuple[str, ...]]]:
     # n-2*i <= len_autocomplements
     # n-len_autocomplements <= 2*i
     # i >= (n-len_autocomplements)/2
@@ -61,7 +61,7 @@ def generate_combinations(L, autocomplements, n):
         for autocomplements_subset in itertools.combinations(autocomplements, n - 2 * i)
     )
 
-def count_valid_combinations(L, autocomplements, n):
+def count_valid_combinations(L: list[list[tuple[str, str]]], autocomplements: list[list[str]], n: int) -> int:
     len_L = len(L)
     len_autocomplements = len(autocomplements)
     m = max(0, (n - len_autocomplements + 1) // 2)

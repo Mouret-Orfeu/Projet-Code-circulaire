@@ -14,8 +14,8 @@ from logging_utils import log_message, log_summary, get_formatted_datetime
 
 
 # Cette fonction résoud le projet et écrit tout les codes circulaires autocomplémentaires dans output.txt
-def nb_circular_autocomplementary_code(full_logging=False, max_length=60):
-    counts = [0] * max_length
+def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int=60) -> None:
+    counts: list[int] = [0] * max_length
 
     S108_grouped, S12_grouped = get_S108_and_S12_grouped_by_complements_and_circular_permutations()
 

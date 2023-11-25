@@ -3,9 +3,9 @@ import igraph as ig
 
 # Cette fonction crée les arrêtes ( exemple (AA, AG), à partir d'un tetranucléotide
 # Si on utilise cette fonction sur tout les tetranucléotides d'un code, il faudra verifier qu'aucune arrete n'est crée plusieurs fois
-def get_vertices_and_edges_tetra(tetra):
-    vertices = set()
-    edges = set()
+def get_vertices_and_edges_tetra(tetra: str) -> tuple[set[str], set[tuple[str, str]]]:
+    vertices: set[str] = set()
+    edges: set[tuple[str, str]] = set()
     for slice_idx in range(1,4):
 
         first_slice = tetra[0:slice_idx]
@@ -23,16 +23,16 @@ def get_vertices_and_edges_tetra(tetra):
 
 # créer le graph à partir des tetra d'un code
 # OPTI:  à voir si l'union des set est opti à utiliser
-def get_graph_from_code(code):
-    vertices = set()
-    edges = set()
+def get_graph_from_code(code: list[str]) -> tuple[set[str], set[tuple[str, str]]]:
+    vertices: set[str] = set()
+    edges: set[tuple[str, str]] = set()
     for tetra in code:
         vertices_tetra, edges_tetra = get_vertices_and_edges_tetra(tetra)
         vertices = vertices | vertices_tetra
         edges = edges | edges_tetra
     return vertices, edges
 
-def graph_is_acyclic(tetra_list):
+def graph_is_acyclic(tetra_list: list[str]) -> bool:
     vertices, edges = get_graph_from_code(tetra_list)
 
     # Step 1: Assign unique IDs to each node (on crée des dictionnaire qui lient )
