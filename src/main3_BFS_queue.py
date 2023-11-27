@@ -1,14 +1,18 @@
 # https://chat.openai.com/c/62971ffd-259d-4ad5-8f34-895914d77863
 # Doesn't work!!!
 
+import os
 import time
 from collections import deque
+
 from tqdm import tqdm
 
-from combinatorics import get_S108_and_S12_grouped_by_complements_and_circular_permutations
-from graph_utils import graph_is_acyclic
-from logging_utils import log_message, log_summary, get_formatted_datetime
+from combinatorics import \
+    get_S108_and_S12_grouped_by_complements_and_circular_permutations
 from general_utils import delete_empty_and_not_in_use_output_files
+from graph_utils import graph_is_acyclic
+from logging_utils import get_formatted_datetime, log_message, log_summary
+
 
 def bfs_generate_grouped_subsets_incremental(S108, S12, target_n, graph_is_acyclic, acyclic_check_count, queues):
     queue_n_1, queue_n_2 = queues.get(target_n-1, (deque([(graph := [], current_subset := [])]), deque()))
@@ -55,6 +59,7 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
     formatted_datetime = get_formatted_datetime()
     log_file_name = f"output-{formatted_datetime}.txt"
     print(f"Logging to {log_file_name}")
+    log_message(log_file_name, f"Script: {os.path.basename(__file__)}\n\n", flush=True)
 
     for n in tqdm(range(1, max_length + 1), desc="Processing"):
         if full_logging:

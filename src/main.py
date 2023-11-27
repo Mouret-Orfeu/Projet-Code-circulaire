@@ -1,3 +1,4 @@
+import os
 import time
 from pprint import pprint
 
@@ -10,7 +11,7 @@ from dna_utils import (get_circular_permutations, get_complement,
                        is_circular_permutation)
 from general_utils import delete_empty_and_not_in_use_output_files
 from graph_utils import graph_is_acyclic
-from logging_utils import log_message, log_summary, get_formatted_datetime
+from logging_utils import get_formatted_datetime, log_message, log_summary
 
 
 # Cette fonction résoud le projet et écrit tout les codes circulaires autocomplémentaires dans output.txt
@@ -23,6 +24,7 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
     formatted_datetime = get_formatted_datetime()
     log_file_name = f"output-{formatted_datetime}.txt"
     print(f"Logging to {log_file_name}")
+    log_message(log_file_name, f"Script: {os.path.basename(__file__)}\n\n", flush=True)
 
     for n in range(1, max_length + 1):
         if full_logging:
