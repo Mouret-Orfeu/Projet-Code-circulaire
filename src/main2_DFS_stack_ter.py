@@ -27,22 +27,8 @@ def generate_grouped_subsets(S108: list[list[tuple[str, str]]], S12: list[list[s
         yield current_subset
         return
     elif total_tetranucleotides > n:
-        return
-
-    # If we haven't selected from S12 yet, try adding a pair from S108
-    if not selected_from_S12:
-        for i in range(start108, len(S108)):
-            for pair in S108[i]:
-                if pair not in current_subset:
-                    graph.append(pair[0])
-                    graph.append(pair[1])
-                    current_subset.append(pair)
-                    acyclic_check_count[0] += 1
-                    if graph_is_acyclic(graph):
-                        yield from generate_grouped_subsets(S108, S12, n, graph, current_subset, i + 1, start12, selected_from_S12, acyclic_check_count)
-                    current_subset.pop()
-                    graph.pop()
-                    graph.pop()
+        print("ERROR: total_tetranucleotides > n")
+        exit(1)
 
     # Try adding a single string from S12
     for j in range(start12, len(S12)):
@@ -55,6 +41,21 @@ def generate_grouped_subsets(S108: list[list[tuple[str, str]]], S12: list[list[s
                     yield from generate_grouped_subsets(S108, S12, n, graph, current_subset, start108, j + 1, True, acyclic_check_count)
                 current_subset.pop()
                 graph.pop()
+
+    # If we haven't selected from S12 yet, try adding a pair from S108
+    if not selected_from_S12 and total_tetranucleotides <= n-2:
+        for i in range(start108, len(S108)):
+            for pair in S108[i]:
+                if pair not in current_subset:
+                    graph.append(pair[0])
+                    graph.append(pair[1])
+                    current_subset.append(pair)
+                    acyclic_check_count[0] += 1
+                    if graph_is_acyclic(graph):
+                        yield from generate_grouped_subsets(S108, S12, n, graph, current_subset, i + 1, start12, selected_from_S12, acyclic_check_count)
+                    current_subset.pop()
+                    graph.pop()
+                    graph.pop()
 
 # Cette fonction résoud le projet et écrit tout les codes circulaires autocomplémentaires dans output.txt
 def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int=60) -> None:

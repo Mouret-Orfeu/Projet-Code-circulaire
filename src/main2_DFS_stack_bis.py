@@ -27,10 +27,11 @@ def generate_grouped_subsets(S108: list[list[tuple[str, str]]], S12: list[list[s
         yield current_subset
         return
     elif total_tetranucleotides > n:
-        return
+        print("ERROR: total_tetranucleotides > n")
+        exit(1)
 
     # If we haven't selected from S12 yet, try adding a pair from S108
-    if not selected_from_S12:
+    if not selected_from_S12 and total_tetranucleotides <= n-2:
         for i in range(start108, len(S108)):
             for pair in S108[i]:
                 if pair not in current_subset:

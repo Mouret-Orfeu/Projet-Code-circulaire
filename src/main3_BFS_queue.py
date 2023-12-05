@@ -56,8 +56,9 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
 
     S108_grouped, S12_grouped = get_S108_and_S12_grouped_by_complements_and_circular_permutations()
 
+    file_name = os.path.basename(__file__)
     formatted_datetime = get_formatted_datetime()
-    log_file_name = f"output-{formatted_datetime}.txt"
+    log_file_name = f"output-{file_name}-{formatted_datetime}.txt"
     print(f"Logging to {log_file_name}")
     log_message(log_file_name, f"Script: {os.path.basename(__file__)}\n\n", flush=True)
 
