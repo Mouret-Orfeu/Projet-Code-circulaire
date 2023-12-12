@@ -30,7 +30,7 @@ def string_to_unique_number(string):
     number += base ** max_length * (len(string) - 1)
     return number
 
-# Generate all possible strings 
+# Generate all possible strings
 lengths = [1, 2, 3, 4]
 characters = ['A', 'C', 'G', 'T']
 all_possible_strings = generate_all_strings(lengths, characters)
@@ -43,7 +43,7 @@ id_to_vertex = {string_to_unique_number(s): s for s in all_possible_strings}
 # Cette fonction crée les arrêtes ( exemple (AA, AG), à partir d'un tetranucléotide (enfaite on convertit les noeuds comme AA, AAT etc en un identifiant entier)
 # Si on utilise cette fonction sur tout les tetranucléotides d'un code, il faudra verifier qu'aucune arrete n'est crée plusieurs fois
 def get_vertices_and_edges_tetra(tetra: str) -> tuple[set[int], set[tuple[int, int]]]:
-    vertices: set[int] = set() 
+    vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
     for slice_idx in range(1,4):
 
@@ -51,9 +51,9 @@ def get_vertices_and_edges_tetra(tetra: str) -> tuple[set[int], set[tuple[int, i
         second_slice = tetra[slice_idx:]
 
         # Convert first slice to ID
-        first_slice_id = vertex_to_id[first_slice] 
-        second_slice_id = vertex_to_id[second_slice] 
-        
+        first_slice_id = vertex_to_id[first_slice]
+        second_slice_id = vertex_to_id[second_slice]
+
         vertices.add(first_slice_id)
 
         if slice_idx == 2:
@@ -64,12 +64,12 @@ def get_vertices_and_edges_tetra(tetra: str) -> tuple[set[int], set[tuple[int, i
             vertices.add(second_slice_id)
         edges.add((first_slice_id, second_slice_id))
 
-        
+
 
     return vertices, edges
 
 def get_vertices_and_edges_from_code(code: list[str]) -> tuple[set[int], set[tuple[int, int]]]:
-    vertices: set[int] = set() 
+    vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
     for tetra in code:
         vertices_tetra, edges_tetra = get_vertices_and_edges_tetra(tetra)
@@ -79,11 +79,10 @@ def get_vertices_and_edges_from_code(code: list[str]) -> tuple[set[int], set[tup
     return vertices, edges
 
 
-    
 # créer le graph à partir des tetra d'un code
 # OPTI:  à voir si l'union des set est opti à utiliser
 def get_graph_from_code(code: list[str]) -> ig.Graph:
-    
+
     size = len(code)
     vertices, edges = get_vertices_and_edges_from_code(code)
 
@@ -92,7 +91,7 @@ def get_graph_from_code(code: list[str]) -> ig.Graph:
 
     vertex_ids = [vertex_to_id[vertex] for vertex in vertices]
     edges_with_ids = [(vertex_to_id[edge[0]], vertex_to_id[edge[1]]) for edge in edges]
-    
+
     # Create the graph with the specified vertices
     graph = ig.Graph(directed=True)
 
@@ -105,71 +104,34 @@ def get_graph_from_code(code: list[str]) -> ig.Graph:
 
     return graph
 
-    
+
 def add_code_to_graph(graph: ig.Graph, code: list[str], size: int, dict_node: dict[int, int]) -> Tuple[ig.Graph, dict, int]:
     vertices, edges = get_vertices_and_edges_from_code(code)
 
-    # DEBUG
-    # print("vertices: ", vertices, "\n")
-    # print("edges: ", edges, "\n")
-
-    # DEBUG 
-    # print("dict_node AVANT ajout: ", {id_to_vertex[key]: value for key, value in dict_node.items()}, "\n")
-
     # Add new vertices to the graph
     for vertex in vertices:
-        # if not any(v_name == vertex for v_name in graph.vs['value']):
-        #     graph.add_vertex()
-        #     graph.vs[size]['value'] = 5
-        #     size += 1
-
-        # DEBUG
-        # print("AJOUT THEORIQUE D'UN NOEUD :", id_to_vertex[vertex])
-
         if vertex not in dict_node.keys():
-
-            # DEBUG
-            # print("AJOUT D'UN NOEUD :", id_to_vertex[vertex])
-
             dict_node[vertex] = size
-            graph.add_vertices(1)      
+            graph.add_vertices(1)
             size += 1
 
-    # DEBUG 
-    # print("dict_node APRES ajout: ", {id_to_vertex[key]: value for key, value in dict_node.items()}, "\n")
-
-    # Convert edges verticies to graph IDs of the verticies using dict_node
+    # Convert edges vertices to graph IDs of the vertices using dict_node
     edges_with_ids = {(dict_node[edge[0]], dict_node[edge[1]]) for edge in edges}
 
     # Add edges to the graph
-    # graph.add_edges(edges)
     graph.add_edges(edges_with_ids)
 
-    # DEBUG 
-    # print("edges_with_ids: ", edges_with_ids, "\n")
-    # print("\n\n")
-    
-     
-
-    return graph, dict_node, size   
+    return graph, dict_node, size
 
 def del_code_from_graph(graph: ig.Graph, code: list[str], size: int, dict_node: dict[int, int]) -> Tuple[ig.Graph, dict, int]:
     vertices, edges = get_vertices_and_edges_from_code(code)
 
-
     graph.delete_edges((dict_node[edge[0]], dict_node[edge[1]]) for edge in edges)
-    #graph.delete_edges(edges)
-    
 
     vertex_to_delete = []
-    # del vertices to the graph
     for vertex in vertices:
-        # if graph.degree(vertex) == 0:
-        #     graph.delete_vertices(vertex)
         if graph.degree(dict_node[vertex]) == 0:
             vertex_to_delete.append(vertex)
-    
-    
     graph.delete_vertices(dict_node[vertex] for vertex in vertex_to_delete)
 
     for vertex in vertex_to_delete:
@@ -200,7 +162,7 @@ def graph_is_acyclic(tetra_list: list[str]) -> bool:
 # for tetra in code:
 #     graph, dict_node, size = add_code_to_graph(graph, [tetra], size, dict_node)
 
-#     # print("igraph: ",  graph, "\n") 
+#     # print("igraph: ",  graph, "\n")
 #     # print("dict_node: ", dict_node, "\n")
 #     # print("size: ", size, "\n")
 
@@ -209,7 +171,7 @@ def graph_is_acyclic(tetra_list: list[str]) -> bool:
 
 # # Reverse the IDs in the graph edges using reversed_dict_node
 # reversed_edges = [(reversed_dict_node[edge[0]], reversed_dict_node[edge[1]]) for edge in graph.get_edgelist()]
-# reversed_edges_strings = [(id_to_vertex[edge[0]], id_to_vertex[edge[1]]) for edge in reversed_edges] 
+# reversed_edges_strings = [(id_to_vertex[edge[0]], id_to_vertex[edge[1]]) for edge in reversed_edges]
 
 # print("reversed_edges_strings: ", reversed_edges_strings, "\n")
 
