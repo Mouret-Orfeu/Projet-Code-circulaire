@@ -26,9 +26,9 @@ def log_summary(file_name: str, n: int, count: int, start_time: float, end_time:
     execution_time = end_time - start_time
     formatted_time = format_execution_time(execution_time)
     with open(file_name, "a", encoding="utf-8") as file:
-        file.write(f"Nombre de codes de taille {n}: {count}\n")
+        file.write(f"Nombre de codes circulaires autocomplémentaires de taille {n}: {count}\n")
         file.write(f"Temps d'exécution: {formatted_time}\n")
         file.write("\n")
-    print(f"Nombre de codes de taille {n}: {count}")
+    print(f"Nombre de codes circulaires autocomplémentaires de taille {n}: {count}")
     print(f"Temps d'exécution: {formatted_time}")
     print()
