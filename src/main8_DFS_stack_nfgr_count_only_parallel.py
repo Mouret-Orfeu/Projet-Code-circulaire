@@ -19,22 +19,60 @@ from graph_utils2 import add_code_to_graph
 from graph_utils2 import del_code_from_graph
 from logging_utils import get_formatted_datetime, log_message, log_summary
 
+import concurrent.futures
+import copy
+
+
+def parallel_get_nb_circular_autocomplementary_codes(args):
+    return get_nb_circular_autocomplementary_codes(*args, parallel=False)
+
 def get_nb_circular_autocomplementary_codes(
-        S108: list[list[tuple[str, str]]],
-        S12: list[list[str]],
-        n: int,
-        igraph: ig.Graph,
-        dict_node: dict,
-        size: int,
-        current_subset: list[tuple[str, str] | str]=[],
-        start108=0,
-        start12=0,
-        selected_from_S12=False
-    ) -> int:
-    # Calculate the total number of tetranucleotides in the current_subset
+        S108, S12, n, igraph, dict_node, size, current_subset=[], start108=0, start12=0, selected_from_S12=False, parallel=True
+    ):
     total_tetranucleotides = sum(2 if isinstance(item, tuple) else 1 for item in current_subset)
 
-    # Check if the current combination has the desired total length
+    if total_tetranucleotides == n:
+        return 1
+    elif total_tetranucleotides > n:
+        print("ERROR: total_tetranucleotides > n")
+        exit(1)
+
+    count = 0
+    tasks = []
+
+    if parallel:
+        # Parallel execution for the first level of recursion
+        if not selected_from_S12 and total_tetranucleotides <= n-2:
+            for i in range(start108, len(S108)):
+                for pair in S108[i]:
+                    new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
+                    new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [pair[0], pair[1]], size, new_dict_node)
+                    new_subset = current_subset + [pair]
+
+                    if new_igraph.is_dag():
+                        tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, i + 1, start12, selected_from_S12))
+
+        for j in range(start12, len(S12)):
+            for single in S12[j]:
+                new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
+                new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [single], size, new_dict_node)
+                new_subset = current_subset + [single]
+
+                if new_igraph.is_dag():
+                    tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, start108, j + 1, True))
+
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks)
+            count = sum(results)
+    else:
+        # Sequential execution for deeper levels of recursion
+        count = sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, start108, start12, selected_from_S12)
+
+    return count
+
+def sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, start108, start12, selected_from_S12):
+    total_tetranucleotides = sum(2 if isinstance(item, tuple) else 1 for item in current_subset)
+
     if total_tetranucleotides == n:
         return 1
     elif total_tetranucleotides > n:
@@ -47,28 +85,28 @@ def get_nb_circular_autocomplementary_codes(
     if not selected_from_S12 and total_tetranucleotides <= n-2:
         for i in range(start108, len(S108)):
             for pair in S108[i]:
-                new_tetras=[pair[0], pair[1]] # pair = new_tetra enfaite je crois, pas besoin de le redefinir, à voir
-                igraph, dict_node, size = add_code_to_graph(igraph, new_tetras, size, dict_node)
+                new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
+                new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [pair[0], pair[1]], size, new_dict_node)
                 current_subset.append(pair)
 
-                if igraph.is_dag():
-                    count += get_nb_circular_autocomplementary_codes(S108, S12, n, igraph, dict_node, size, current_subset, i + 1, start12, selected_from_S12)
+                if new_igraph.is_dag():
+                    count += sequential_execution(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, i + 1, start12, selected_from_S12)
 
                 current_subset.pop()
-                igraph, dict_node, size = del_code_from_graph(igraph, new_tetras, size, dict_node)
+                # igraph, dict_node, size = del_code_from_graph(igraph, [pair[0], pair[1]], size, dict_node)
 
     # Try adding a single string from S12
     for j in range(start12, len(S12)):
         for single in S12[j]:
-            new_tetra=[single] # cette ligne est peut être inutile, on peut peut être utiliser single à la place de new_tetra
-            igraph, dict_node, size = add_code_to_graph(igraph, new_tetra, size, dict_node)
+            new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
+            new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [single], size, new_dict_node)
             current_subset.append(single)
 
-            if igraph.is_dag():
-                count += get_nb_circular_autocomplementary_codes(S108, S12, n, igraph, dict_node, size, current_subset, start108, j + 1, True)
+            if new_igraph.is_dag():
+                count += sequential_execution(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, start108, j + 1, True)
 
             current_subset.pop()
-            igraph, dict_node, size = del_code_from_graph(igraph, new_tetra, size, dict_node)
+            # igraph, dict_node, size = del_code_from_graph(igraph, [single], size, dict_node)
 
     return count
 
@@ -95,6 +133,15 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
         end_time = time.time()
 
         log_summary(log_file_name, n, count, start_time, end_time, full_logging)
+
+    # n = 11
+    # print(f"n = {n}")
+    # start_time = time.time()
+
+    # count =  get_nb_circular_autocomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
+    # end_time = time.time()
+
+    # log_summary(log_file_name, n, count, start_time, end_time, full_logging)
 
 
 def main():
