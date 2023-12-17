@@ -27,11 +27,62 @@
     ![Tests dans PyCharm](assets/Tests%20dans%20PyCharm.png)
     ![Tests dans VS Code](assets/Tests%20dans%20VS%20Code.png)
 
-## Remarques sur le code
+## Remarques sur le programme
 
-- Typage
-- Tests unitaires (non extensifs)
-- Parallélisme
+- Le programme utilise les informations suivantes :
+  - Il y a 256 tétranucléotides
+  - 16 d'entre eux ont un cycle de longueur 2 et ne peuvent donc pas être utilisés pour former un code circulaire (`AAAA,ACAC,AGAG,ATAT,CACA,CCCC,CGCG,CTCT,GAGA,GCGC,GGGG,GTGT,TATA,TCTC,TGTG,TTTT`)
+  - 12 des 240 tétranucléotides restants sont autocomplémentaires (`AATT,ACGT,AGCT,CATG,CCGG,CTAG,GATC,GGCC,GTAC,TCGA,TGCA,TTAA`). On note S12 l'ensemble de ces tétranucléotides, et S228 les 228 autres tétranucléotides.
+  - S'il y a un tétranucléotide dans un code autocomplémentaire, alors il doit aussi contenir son complémentaire
+  - S'il y a un tétranucléotide dans un code circulaire, alors il ne peut pas contenir son complémentaire
+  - 6 paires de tétranucléotides de S228 sont à la fois complémentaires et permutées (`(ATTA,TAAT), (ATGC,GCAT), (ATCG,CGAT), (TAGC,GCTA), (TACG,CGTA), (GCCG,CGGC)`), on peut donc les supprimer, ce qui nous donne S216.
+  - S12 est stocké sous forme d'une liste de 2-listes de tétranucléotides permutés, ce qui permet de ne jamais empiler à la fois un tétranucléotide et son permuté.
+
+    S12:
+    ```
+    [['AATT', 'TTAA'],
+     ['AGCT', 'CTAG'],
+     ['ACGT', 'GTAC'],
+     ['TGCA', 'CATG'],
+     ['TCGA', 'GATC'],
+     ['GGCC', 'CCGG']]
+    ```
+    De la même manière, S216 est stocké sous forme d'une liste de 4-listes de paires de tétranucléotides complémentaires, de manière à ce que les premiers éléments des paires d'une 4-liste soient permutés l'un de l'autre, idem pour les deuxièmes éléments.
+
+    S216:
+    ```
+    [[('AAAT', 'ATTT'), ('AATA', 'TATT'), ('ATAA', 'TTAT'), ('TAAA', 'TTTA')],
+     [('AAAG', 'CTTT'), ('AAGA', 'TCTT'), ('AGAA', 'TTCT'), ('GAAA', 'TTTC')],
+     [('AAAC', 'GTTT'), ('AACA', 'TGTT'), ('ACAA', 'TTGT'), ('CAAA', 'TTTG')],
+     [('AATG', 'CATT'), ('GAAT', 'ATTC'), ('ATGA', 'TCAT'), ('TGAA', 'TTCA')],
+     [('AATC', 'GATT'), ('CAAT', 'ATTG'), ('ATCA', 'TGAT'), ('TCAA', 'TTGA')],
+     [('AAGT', 'ACTT'), ('AGTA', 'TACT'), ('TAAG', 'CTTA'), ('GTAA', 'TTAC')],
+     [('AAGG', 'CCTT'), ('AGGA', 'TCCT'), ('GGAA', 'TTCC'), ('GAAG', 'CTTC')],
+     [('AAGC', 'GCTT'), ('AGCA', 'TGCT'), ('GCAA', 'TTGC'), ('CAAG', 'CTTG')],
+     [('AACT', 'AGTT'), ('ACTA', 'TAGT'), ('TAAC', 'GTTA'), ('CTAA', 'TTAG')],
+     [('AACG', 'CGTT'), ('ACGA', 'TCGT'), ('CGAA', 'TTCG'), ('GAAC', 'GTTC')],
+     [('AACC', 'GGTT'), ('ACCA', 'TGGT'), ('CCAA', 'TTGG'), ('CAAC', 'GTTG')],
+     [('ATAG', 'CTAT'), ('AGAT', 'ATCT'), ('GATA', 'TATC'), ('TAGA', 'TCTA')],
+     [('ATAC', 'GTAT'), ('ACAT', 'ATGT'), ('CATA', 'TATG'), ('TACA', 'TGTA')],
+     [('ATGG', 'CCAT'), ('GGAT', 'ATCC'), ('TGGA', 'TCCA'), ('GATG', 'CATC')],
+     [('AGAC', 'GTCT'), ('ACAG', 'CTGT'), ('GACA', 'TGTC'), ('CAGA', 'TCTG')],
+     [('AGTG', 'CACT'), ('GAGT', 'ACTC'), ('TGAG', 'CTCA'), ('GTGA', 'TCAC')],
+     [('AGTC', 'GACT'), ('CAGT', 'ACTG'), ('GTCA', 'TGAC'), ('TCAG', 'CTGA')],
+     [('AGGT', 'ACCT'), ('TAGG', 'CCTA'), ('GGTA', 'TACC'), ('GTAG', 'CTAC')],
+     [('AGGG', 'CCCT'), ('GGGA', 'TCCC'), ('GAGG', 'CCTC'), ('GGAG', 'CTCC')],
+     [('AGGC', 'GCCT'), ('GGCA', 'TGCC'), ('GCAG', 'CTGC'), ('CAGG', 'CCTG')],
+     [('AGCG', 'CGCT'), ('GCGA', 'TCGC'), ('GAGC', 'GCTC'), ('CGAG', 'CTCG')],
+     [('AGCC', 'GGCT'), ('GCCA', 'TGGC'), ('CAGC', 'GCTG'), ('CCAG', 'CTGG')],
+     [('ACGG', 'CCGT'), ('CGGA', 'TCCG'), ('GACG', 'CGTC'), ('GGAC', 'GTCC')],
+     [('ACGC', 'GCGT'), ('CGCA', 'TGCG'), ('GCAC', 'GTGC'), ('CACG', 'CGTG')],
+     [('ACCG', 'CGGT'), ('CCGA', 'TCGG'), ('GACC', 'GGTC'), ('CGAC', 'GTCG')],
+     [('ACCC', 'GGGT'), ('CCCA', 'TGGG'), ('CCAC', 'GTGG'), ('CACC', 'GGTG')],
+     [('GGGC', 'GCCC'), ('GGCG', 'CGCC'), ('GCGG', 'CCGC'), ('CGGG', 'CCCG')]]
+    ```
+- Le programme effectue un parcours d'arbre en profondeur en empilant/dépilant à chaque étape soit un tétranuclaotide autocomplémentaire, soit une paire de tétranucléotides complémentaires. Ce parcours est implémenté grâce à la fonction récursive `get_nb_circular_autocomplementary_codes`. À chaque étape, on teste l'absence de cycle avec `graph.is_dag()` qui est équivalente à la circularité (sachant que l'autocomplémentarité est déjà garantie par la manière dont nous générons les codes à tester). On ne peut pas obtenir de code circulaire en rajoutant un tétranucléotide à un code non circulaire, ce qui nous permet de faire du pruning dans le parcours d'arbre.
+- Nous utilisons le typage, récemment ajouté à Python, pour améliorer les performances et la lisibilité du code.
+- Nous avons effectués des tests unitaires, bien que non extensifs, pour vérifier le bon fonctionnement de notre programme.
+- Nous avons implémenté le parallélisme avec un nombre fixe de 120 threads. Cela demande de copier le graphe à chaque passage, mais cela se traduit tout de même par un gain de performance. Cependant, nous sommes limités par le GIL (Global Interpreter Lock) du langage Python qui limite l'efficacité du multithreading de Python.
 - Nombre de lignes : ???? ainsi que ???? lignes de test.
 
 ## Résultats : Nombre de codes circulaires autocomplémentaires en fonction de la longueur
