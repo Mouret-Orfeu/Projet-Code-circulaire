@@ -8,15 +8,9 @@ import igraph as ig
 
 from tqdm import tqdm
 
-from combinatorics import (
-    count_valid_combinations, generate_combinations,
-    get_S108_and_S12_grouped_by_complements_and_circular_permutations)
-from dna_utils import (get_circular_permutations, get_complement,
-                       is_circular_permutation)
+from combinatorics import get_S108_and_S12_grouped_by_complements_and_circular_permutations
 from general_utils import delete_empty_and_not_in_use_output_files
-from graph_utils import graph_is_acyclic
 from graph_utils import add_code_to_graph
-from graph_utils import del_code_from_graph
 from logging_utils import get_formatted_datetime, log_message, log_summary
 
 import concurrent.futures

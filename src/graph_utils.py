@@ -9,8 +9,6 @@ def char_to_num(char):
     mapping = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
     return mapping[char]
 
-
-
 def generate_all_strings(lengths, characters):
     """Generate all possible strings of given lengths and characters."""
     all_strings = []
@@ -63,8 +61,6 @@ def get_vertices_and_edges_tetra(tetra: str) -> tuple[set[int], set[tuple[int, i
         else:
             vertices.add(second_slice_id)
         edges.add((first_slice_id, second_slice_id))
-
-
 
     return vertices, edges
 
@@ -140,39 +136,8 @@ def del_code_from_graph(graph: ig.Graph, code: list[str], size: int, dict_node: 
 
     return graph, dict_node, size
 
-
 def graph_is_acyclic(tetra_list: list[str]) -> bool:
     graph = get_graph_from_code(tetra_list)
 
     # Now we can work with the graph using igraph functions
     return graph.is_dag()
-
-
-##########################################################################################################################
-# Tests
-# code = ['TTAA']
-# graph = ig.Graph(directed=True)
-# dict_node = {}
-# size = 0
-
-# # vertices, edges = get_vertices_and_edges_from_code(code)
-
-
-
-# for tetra in code:
-#     graph, dict_node, size = add_code_to_graph(graph, [tetra], size, dict_node)
-
-#     # print("igraph: ",  graph, "\n")
-#     # print("dict_node: ", dict_node, "\n")
-#     # print("size: ", size, "\n")
-
-# reversed_dict_node = {v: k for k, v in dict_node.items()}
-
-
-# # Reverse the IDs in the graph edges using reversed_dict_node
-# reversed_edges = [(reversed_dict_node[edge[0]], reversed_dict_node[edge[1]]) for edge in graph.get_edgelist()]
-# reversed_edges_strings = [(id_to_vertex[edge[0]], id_to_vertex[edge[1]]) for edge in reversed_edges]
-
-# print("reversed_edges_strings: ", reversed_edges_strings, "\n")
-
-# print(graph)
