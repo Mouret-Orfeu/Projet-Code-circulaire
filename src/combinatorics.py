@@ -1,9 +1,9 @@
 import itertools
 import math
 
-from src.dna_utils import (get_circular_permutations, get_complement,
+from dna_utils import (get_circular_permutations, get_complement,
                        is_circular_permutation)
-from src.graph_utils import graph_is_acyclic
+from graph_utils import graph_is_acyclic
 
 
 def get_S108_and_S12_grouped_by_complements_and_circular_permutations() -> tuple[list[list[tuple[str, str]]], list[list[str]]]:

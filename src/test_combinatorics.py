@@ -1,7 +1,7 @@
 import unittest
 
-from src import combinatorics
-from src import dna_utils
+import combinatorics
+import dna_utils
 
 
 class TestCombinatorics(unittest.TestCase):
