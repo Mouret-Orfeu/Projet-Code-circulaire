@@ -61,8 +61,12 @@ def get_nb_circular_autocomplementary_codes(
                 if new_igraph.is_dag():
                     tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, start108, j + 1, True))
 
+        # with concurrent.futures.ProcessPoolExecutor() as executor:
+        #     results = executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks)
+        #     count = sum(results)
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            results = executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks)
+            # Map tasks to the executor and create a tqdm progress bar
+            results = list(tqdm(executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks), total=len(tasks)))
             count = sum(results)
     else:
         # Sequential execution for deeper levels of recursion
@@ -133,15 +137,6 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
         end_time = time.time()
 
         log_summary(log_file_name, n, count, start_time, end_time, full_logging)
-
-    # n = 11
-    # print(f"n = {n}")
-    # start_time = time.time()
-
-    # count =  get_nb_circular_autocomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
-    # end_time = time.time()
-
-    # log_summary(log_file_name, n, count, start_time, end_time, full_logging)
 
 
 def main():
