@@ -14,9 +14,9 @@ from combinatorics import (
 from dna_utils import (get_circular_permutations, get_complement,
                        is_circular_permutation)
 from general_utils import delete_empty_and_not_in_use_output_files
-from graph_utils2 import graph_is_acyclic
-from graph_utils2 import add_code_to_graph
-from graph_utils2 import del_code_from_graph
+from graph_utils import graph_is_acyclic
+from graph_utils import add_code_to_graph
+from graph_utils import del_code_from_graph
 from logging_utils import get_formatted_datetime, log_message, log_summary
 
 import concurrent.futures
