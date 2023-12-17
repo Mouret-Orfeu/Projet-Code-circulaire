@@ -23,12 +23,18 @@ import concurrent.futures
 import copy
 
 
-def parallel_get_nb_circular_autocomplementary_codes(args):
-    return get_nb_circular_autocomplementary_codes(*args, parallel=False)
-
-def get_nb_circular_autocomplementary_codes(
-        S108, S12, n, igraph, dict_node, size, current_subset=[], start108=0, start12=0, selected_from_S12=False, parallel=True
-    ):
+def get_nb_circular_autocomplementary_codes_parallel(
+        S108: list[list[tuple[str, str]]],
+        S12: list[list[str]],
+        n: int,
+        igraph: ig.Graph,
+        dict_node: dict,
+        size: int,
+        current_subset: list[tuple[str, str] | str]=[],
+        start108: int=0,
+        start12: int=0,
+        selected_from_S12: bool=False
+    ) -> int:
     total_tetranucleotides = sum(2 if isinstance(item, tuple) else 1 for item in current_subset)
 
     if total_tetranucleotides == n:
@@ -40,41 +46,48 @@ def get_nb_circular_autocomplementary_codes(
     count = 0
     tasks = []
 
-    if parallel:
-        # Parallel execution for the first level of recursion
-        if not selected_from_S12 and total_tetranucleotides <= n-2:
-            for i in range(start108, len(S108)):
-                for pair in S108[i]:
-                    new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
-                    new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [pair[0], pair[1]], size, new_dict_node)
-                    new_subset = current_subset + [pair]
-
-                    if new_igraph.is_dag():
-                        tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, i + 1, start12, selected_from_S12))
-
-        for j in range(start12, len(S12)):
-            for single in S12[j]:
+    # Parallel execution for the first level of recursion
+    if not selected_from_S12 and total_tetranucleotides <= n-2:
+        for i in range(start108, len(S108)):
+            for pair in S108[i]:
                 new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
-                new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [single], size, new_dict_node)
-                new_subset = current_subset + [single]
+                new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [pair[0], pair[1]], size, new_dict_node)
+                new_subset = current_subset + [pair]
 
                 if new_igraph.is_dag():
-                    tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, start108, j + 1, True))
+                    tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, i + 1, start12, selected_from_S12))
 
-        # with concurrent.futures.ProcessPoolExecutor() as executor:
-        #     results = executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks)
-        #     count = sum(results)
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            # Map tasks to the executor and create a tqdm progress bar
-            results = list(tqdm(executor.map(parallel_get_nb_circular_autocomplementary_codes, tasks), total=len(tasks)))
-            count = sum(results)
-    else:
-        # Sequential execution for deeper levels of recursion
-        count = sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, start108, start12, selected_from_S12)
+    for j in range(start12, len(S12)):
+        for single in S12[j]:
+            new_igraph, new_dict_node = copy.deepcopy(igraph), copy.deepcopy(dict_node)
+            new_igraph, new_dict_node, new_size = add_code_to_graph(new_igraph, [single], size, new_dict_node)
+            new_subset = current_subset + [single]
+
+            if new_igraph.is_dag():
+                tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, start108, j + 1, True))
+
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        # Prepare a list of futures
+        futures = {executor.submit(get_nb_circular_autocomplementary_codes, *task) for task in tasks}
+
+        # Use tqdm to track the progress of futures as they complete
+        for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
+            count += future.result()
 
     return count
 
-def sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, start108, start12, selected_from_S12):
+def get_nb_circular_autocomplementary_codes(
+        S108: list[list[tuple[str, str]]],
+        S12: list[list[str]],
+        n: int,
+        igraph: ig.Graph,
+        dict_node: dict,
+        size: int,
+        current_subset: list[tuple[str, str] | str]=[],
+        start108: int=0,
+        start12: int=0,
+        selected_from_S12: bool=False
+    ) -> int:
     total_tetranucleotides = sum(2 if isinstance(item, tuple) else 1 for item in current_subset)
 
     if total_tetranucleotides == n:
@@ -94,10 +107,9 @@ def sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, 
                 current_subset.append(pair)
 
                 if new_igraph.is_dag():
-                    count += sequential_execution(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, i + 1, start12, selected_from_S12)
+                    count += get_nb_circular_autocomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, i + 1, start12, selected_from_S12)
 
                 current_subset.pop()
-                # igraph, dict_node, size = del_code_from_graph(igraph, [pair[0], pair[1]], size, dict_node)
 
     # Try adding a single string from S12
     for j in range(start12, len(S12)):
@@ -107,10 +119,9 @@ def sequential_execution(S108, S12, n, igraph, dict_node, size, current_subset, 
             current_subset.append(single)
 
             if new_igraph.is_dag():
-                count += sequential_execution(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, start108, j + 1, True)
+                count += get_nb_circular_autocomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, start108, j + 1, True)
 
             current_subset.pop()
-            # igraph, dict_node, size = del_code_from_graph(igraph, [single], size, dict_node)
 
     return count
 
@@ -133,7 +144,7 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
     for n in range(1, max_length + 1):
         start_time = time.time()
 
-        count =  get_nb_circular_autocomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
+        count =  get_nb_circular_autocomplementary_codes_parallel(S108_grouped, S12_grouped, n, igraph, dict_node, size)
         end_time = time.time()
 
         log_summary(log_file_name, n, count, start_time, end_time, full_logging)
