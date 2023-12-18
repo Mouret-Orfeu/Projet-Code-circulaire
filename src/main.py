@@ -16,7 +16,7 @@ import concurrent.futures
 import copy
 
 
-def get_nb_circular_autocomplementary_codes(
+def get_nb_circular_selfcomplementary_codes(
         S108: list[list[tuple[str, str]]],
         S12: list[list[str]],
         n: int,
@@ -64,7 +64,7 @@ def get_nb_circular_autocomplementary_codes(
                     tasks.append((S108, S12, n, new_igraph, new_dict_node, new_size, new_subset, start108, j + 1, True))
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = {executor.submit(get_nb_circular_autocomplementary_codes, *task, parallel=False) for task in tasks}
+            futures = {executor.submit(get_nb_circular_selfcomplementary_codes, *task, parallel=False) for task in tasks}
             for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
                 count += future.result()
 
@@ -78,7 +78,7 @@ def get_nb_circular_autocomplementary_codes(
                     current_subset.append(pair)
 
                     if new_igraph.is_dag():
-                        count += get_nb_circular_autocomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, i+1, start12, selected_from_S12, parallel=False)
+                        count += get_nb_circular_selfcomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, i+1, start12, selected_from_S12, parallel=False)
 
                     current_subset.pop()
 
@@ -89,20 +89,19 @@ def get_nb_circular_autocomplementary_codes(
                 current_subset.append(single)
 
                 if new_igraph.is_dag():
-                    count += get_nb_circular_autocomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, start108, j + 1, True, parallel=False)
+                    count += get_nb_circular_selfcomplementary_codes(S108, S12, n, new_igraph, new_dict_node, new_size, current_subset, start108, j + 1, True, parallel=False)
 
                 current_subset.pop()
 
     return count
 
 # Cette fonction résout le projet et écrit tous les codes circulaires autocomplémentaires dans output.txt
-def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int=60) -> None:
+def nb_circular_selfcomplementary_codes(full_logging: bool=False, max_length: int=60) -> None:
     S108_grouped, S12_grouped = get_S108_and_S12_grouped_by_complements_and_circular_permutations()
 
     # On va écrire dans output.txt tous les codes de toutes les tailles trouvé
-    file_name = os.path.basename(__file__)
     formatted_datetime = get_formatted_datetime()
-    log_file_name = f"output-{file_name}-{formatted_datetime}.txt"
+    log_file_name = f"output-{formatted_datetime}.txt"
     print(f"Logging to {log_file_name}")
     log_message(log_file_name, f"Script: {os.path.basename(__file__)}\n\n", flush=True)
 
@@ -113,7 +112,7 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
     for n in range(1, max_length + 1):
         start_time = time.time()
 
-        count =  get_nb_circular_autocomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
+        count = get_nb_circular_selfcomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
         end_time = time.time()
 
         log_summary(log_file_name, n, count, start_time, end_time, full_logging)
@@ -121,7 +120,7 @@ def nb_circular_autocomplementary_code(full_logging: bool=False, max_length: int
 
 def main():
     delete_empty_and_not_in_use_output_files()
-    nb_circular_autocomplementary_code()
+    nb_circular_selfcomplementary_codes()
 
 
 if __name__ == "__main__":
