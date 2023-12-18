@@ -1,9 +1,24 @@
-# Projet-Code
+# Compter les codes circulaires autocomplémentaires
 
 ## Exécution simple avec exécutable
 
+Il suffit de double-cliquer sur `count_circular_self-complementary_codes.bat` ou `count_circular_self-complementary_codes.exe` pour lancer le programme !
+
+### Remarques
+
 Cette méthode exécute le programme avec la version de Python intégrée à ce dossier (dans `python-3.12.1-embed-amd64`).
 
+Que ce soit avec le `.bat` ou le `.exe`, ils ne fonctionneront pas en dehors de ce dossier.
+
+Le fichier `.bat` ne contient que ces 4 lignes, permettant d'exécuter `src/main.py` avec la version de Python intégrée à ce dossier. La deuxième ligne permet de se placer dans le dossier du `.bat`.
+```bat
+@echo off
+cd /d "%~dp0"
+.\python-3.12.1-embed-amd64\python.exe .\src\main.py
+pause
+```
+
+Le fichier `.exe` a été généré à partir du `.bat` avec [cet outil](https://www.battoexeconverter.com/), testé sans danger par plusieurs antivirus ([résultats de l'analyse](https://www.virustotal.com/gui/file/af09248cb756488850f9e6f9a7a00149005bf47a9b2087b792ff6bd937297ffb)), contrairement à celui qui s'affichait en haut des résultats Google ([résultats de l'analyse](https://www.virustotal.com/gui/file/460cbb0cd827523b0381d89188f615a25a9e57d3af65d5654ec00fdda31cc705)).
 
 ## Exécution avec la version installée de Python
 
@@ -32,7 +47,7 @@ Comme ils sont plutôt utiles pour le développement, nous n'avons pas paramétr
     ```
 - Lancer les tests
     ```bash
-    python -m unittest discover -s tests
+    python -m unittest discover -s src
     ```
     (Certains IDEs comme PyCharm et VS Code permettent de lancer les tests directement depuis l'IDE)
     ![Tests dans PyCharm](assets/Tests%20dans%20PyCharm.png)
@@ -94,7 +109,7 @@ Comme ils sont plutôt utiles pour le développement, nous n'avons pas paramétr
 - Nous utilisons le typage, récemment ajouté à Python, pour améliorer les performances et la lisibilité du code.
 - Nous avons effectués des tests unitaires, bien que non extensifs, pour vérifier le bon fonctionnement de notre programme.
 - Nous avons implémenté le parallélisme avec un nombre fixe de 120 threads. Cela demande de copier le graphe à chaque passage, mais cela se traduit tout de même par un gain de performance. Cependant, nous sommes limités par le GIL (Global Interpreter Lock) du langage Python qui limite l'efficacité du multithreading de Python.
-- Nombre de lignes : ???? ainsi que ???? lignes de test.
+- 306 lignes de code Python pour compter les codes circulaires autocomplémentaires, plus 62 lignes de code Python pour les tests unitaires.
 
 ## Résultats : Nombre de codes circulaires autocomplémentaires en fonction de la longueur
 
