@@ -3,6 +3,7 @@ import itertools
 
 import graph_utils
 
+
 class TestStringToUniqueNumber(unittest.TestCase):
     def test_tetranucleotide_uniqueness(self):
         """Test that all tetranucleotides are assigned distinct numbers."""

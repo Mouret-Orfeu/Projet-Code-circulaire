@@ -2,7 +2,7 @@ from typing import Tuple
 import igraph as ig
 from itertools import product
 
-##########################################################################################################################
+
 # mapper tous les noeuds de graph possible sur des int
 def char_to_num(char):
     """Map each character to a number."""

@@ -1,5 +1,4 @@
 import itertools
-import math
 
 from dna_utils import get_circular_permutations, get_complement, is_circular_permutation
 
