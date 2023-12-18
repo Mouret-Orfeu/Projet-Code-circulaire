@@ -2,4 +2,3 @@ output-*.txt
 .vscode
 .pytest_cache
 __pycache__
-python-3.12.1-embed-amd64
