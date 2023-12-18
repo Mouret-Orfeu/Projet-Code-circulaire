@@ -109,6 +109,7 @@ Comme ils sont plutôt utiles pour le développement, nous n'avons pas paramétr
 - Nous utilisons le typage, récemment ajouté à Python, pour améliorer les performances et la lisibilité du code.
 - Nous avons effectués des tests unitaires, bien que non extensifs, pour vérifier le bon fonctionnement de notre programme.
 - Nous avons implémenté le parallélisme avec un nombre fixe de 120 threads. Cela demande de copier le graphe à chaque passage, mais cela se traduit tout de même par un gain de performance. Cependant, nous sommes limités par le GIL (Global Interpreter Lock) du langage Python qui limite l'efficacité du multithreading de Python.
+- La barre de progression indique combien parmi ces 120 threads ont terminé de s'exécuter. Elle n'est donc pas très régulière, elle commence lentement et elle finit vite.
 - 306 lignes de code Python pour compter les codes circulaires autocomplémentaires, plus 62 lignes de code Python pour les tests unitaires.
 
 ## Résultats : Nombre de codes circulaires autocomplémentaires en fonction de la longueur
