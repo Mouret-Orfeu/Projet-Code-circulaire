@@ -99,6 +99,10 @@ def get_nb_circular_selfcomplementary_codes(
 def nb_circular_selfcomplementary_codes(full_logging: bool=False, max_length: int=60) -> None:
     S108_grouped, S12_grouped = get_S108_and_S12_grouped_by_complements_and_circular_permutations()
 
+    print("Calculating the number of circular self-complementary codes by code length")
+    print("A program from Maxime DROUHIN and Orfeú MOURET")
+    print()
+
     # On va écrire dans output.txt tous les codes de toutes les tailles trouvé
     formatted_datetime = get_formatted_datetime()
     log_file_name = f"output-{formatted_datetime}.txt"
