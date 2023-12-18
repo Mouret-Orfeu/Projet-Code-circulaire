@@ -22,13 +22,11 @@ def log_message(file_name: str, message: str, flush: bool=False) -> None:
         if flush:
             file.flush()
 
-def log_summary(file_name: str, n: int, count: int, start_time: float, end_time: float, full_logging: bool) -> None:
+def log_summary(file_name: str, n: int, count: int, start_time: float, end_time: float) -> None:
     execution_time = end_time - start_time
     formatted_time = format_execution_time(execution_time)
     with open(file_name, "a", encoding="utf-8") as file:
-        file.write(f"Number of circular self-complementary codes of length {n}: {count}\n")
-        file.write(f"Execution time: {formatted_time}\n")
-        file.write("\n")
+        file.write(f"{n}: {count} (execution time: {formatted_time})\n")
     print(f"Number of circular self-complementary codes of length {n}: {count}")
     print(f"Execution time: {formatted_time}")
     print()

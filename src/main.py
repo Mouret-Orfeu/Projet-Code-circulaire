@@ -96,7 +96,7 @@ def get_nb_circular_selfcomplementary_codes(
     return count
 
 # Cette fonction résout le projet et écrit tous les codes circulaires autocomplémentaires dans output.txt
-def nb_circular_selfcomplementary_codes(full_logging: bool=False, max_length: int=60) -> None:
+def nb_circular_selfcomplementary_codes(max_length: int=60) -> None:
     S108_grouped, S12_grouped = get_S108_and_S12_grouped_by_complements_and_circular_permutations()
 
     print("Calculating the number of circular self-complementary codes by code length")
@@ -107,7 +107,6 @@ def nb_circular_selfcomplementary_codes(full_logging: bool=False, max_length: in
     formatted_datetime = get_formatted_datetime()
     log_file_name = f"output-{formatted_datetime}.txt"
     print(f"Logging to {log_file_name}")
-    log_message(log_file_name, f"Script: {os.path.basename(__file__)}\n\n", flush=True)
 
     igraph = ig.Graph(directed=True)
     dict_node = {}
@@ -119,7 +118,7 @@ def nb_circular_selfcomplementary_codes(full_logging: bool=False, max_length: in
         count = get_nb_circular_selfcomplementary_codes(S108_grouped, S12_grouped, n, igraph, dict_node, size)
         end_time = time.time()
 
-        log_summary(log_file_name, n, count, start_time, end_time, full_logging)
+        log_summary(log_file_name, n, count, start_time, end_time)
 
 
 def main():
