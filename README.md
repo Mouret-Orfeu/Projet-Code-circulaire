@@ -1,7 +1,16 @@
 # Projet-Code
 
-## Exécution
+## Exécution simple avec exécutable
 
+Cette méthode exécute le programme avec la version de Python intégrée à ce dossier (dans `python-3.12.1-embed-amd64`).
+
+
+## Exécution avec la version installée de Python
+
+- S'assurer d'avoir Python 3.11 ou supérieur installé
+    ```bash
+    python --version
+    ```
 - Se placer à la racine du projet
 - Installer les dépendances
     ```bash
@@ -13,6 +22,8 @@
     ```
 
 ## Tests
+
+Comme ils sont plutôt utiles pour le développement, nous n'avons pas paramétré le lancement avec la version Python intégrée. Si vous voulez lancer les tests, il faut vous assurer d'avoir Python 3.11 ou supérieur installé. Mais vous verrez juste qu'ils passent sans erreur, donc vous pouvez plutôt jeter un oeil à `test_dna_utils.py`, `test_graph_utils.py` et `test_combinatorics.py`.
 
 - Se placer à la racine du projet
 - Installer les dépendances
